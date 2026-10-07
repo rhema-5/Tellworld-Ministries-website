@@ -5,21 +5,190 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tellworld Ministry</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #f4f7fb; color: #222; }
-    header { background: #1e3a8a; color: white; padding: 20px; text-align: center; }
-    nav { background: #0f2557; padding: 10px; text-align: center; }
-    nav a { color: white; margin: 0 8px; text-decoration: none; font-size: 14px; }
-    .hero { padding: 40px 20px; text-align: center; background: white; margin: 15px; border-radius: 10px; }
-    .grid { display: grid; grid-template-columns: 1fr; gap: 15px; padding: 15px; }
-    .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
-    .card h3 { margin-top: 0; color: #1e3a8a; }
-    footer { text-align: center; padding: 20px; color: #666; font-size: 13px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f4fa;
+      color: #0f1f3d;
+      line-height: 1.6;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+      background: linear-gradient(135deg, #0f2557, #1e3a8a, #2563eb);
+      color: white;
+      padding: 18px 16px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .globe {
+      width: 55px; height: 55px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #60a5fa, #1e3a8a 70%);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: 1px;
+      color: white;
+      border: 3px solid white;
+      box-shadow: 0 0 0 3px #2563eb;
+    }
+    header h1 { font-size: 22px; letter-spacing: 1px; }
+    header p { font-size: 12px; opacity: 0.9; }
+
+    /* ---------- NAV ---------- */
+    nav {
+      background: #0a1a3d;
+      padding: 8px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.08);
+      transition: 0.2s;
+    }
+    nav a:hover { background: #2563eb; }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: white;
+      padding: 45px 20px;
+      text-align: center;
+      margin: 14px;
+      border-radius: 14px;
+      box-shadow: 0 6px 20px rgba(30,58,138,0.3);
+    }
+    .hero h2 { font-size: 24px; margin-bottom: 8px; }
+    .hero p { font-size: 14px; opacity: 0.95; }
+    .hero .verse {
+      margin-top: 14px;
+      font-style: italic;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    /* ---------- SECTIONS ---------- */
+    .section-title {
+      text-align: center;
+      color: #0f2557;
+      font-size: 18px;
+      margin: 25px 0 8px;
+      font-weight: 700;
+    }
+    .section-title span {
+      display: inline-block;
+      border-bottom: 3px solid #2563eb;
+      padding-bottom: 4px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding: 10px 14px 30px;
+    }
+    @media (min-width: 600px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 5px solid #2563eb;
+      box-shadow: 0 3px 10px rgba(15,37,87,0.08);
+      transition: 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 18px rgba(15,37,87,0.15);
+    }
+    .card h3 {
+      color: #0f2557;
+      font-size: 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card p { font-size: 13px; color: #445; }
+
+    .badge {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1e3a8a;
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    /* Sub-sections inside Announcements */
+    .sub-list { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .sub-list span {
+      background: #eef4ff;
+      color: #1e3a8a;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      border: 1px solid #c7dbff;
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      background: #0a1a3d;
+      color: #b9c8e6;
+      text-align: center;
+      padding: 22px 16px;
+      font-size: 12px;
+    }
+    footer strong { color: white; }
+
+    /* ---------- LOGIN BUTTON ---------- */
+    .login-btn {
+      display: block;
+      width: fit-content;
+      margin: 0 auto 20px;
+      background: white;
+      color: #1e3a8a;
+      padding: 10px 24px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>Tellworld Ministry</h1>
-    <p>Sharing the Gospel to the Ends of the Earth</p>
+    <div class="logo-wrap">
+      <div class="globe">TELL</div>
+      <div style="text-align:left;">
+        <h1>Tellworld Ministry</h1>
+        <p>Sharing the Gospel to the Ends of the Earth</p>
+      </div>
+    </div>
   </header>
 
   <nav>
@@ -39,67 +208,96 @@
   <section class="hero">
     <h2>Welcome to Tellworld Ministry</h2>
     <p>A place of worship, growth, and fellowship.</p>
+    <div class="verse">"Go into all the world and preach the gospel to all creation." — Mark 16:15</div>
+    <br>
+    <a href="#account" class="login-btn">🔐 Member Login</a>
   </section>
 
+  <h2 class="section-title"><span>Our Sections</span></h2>
+
   <section class="grid">
+
     <div class="card" id="dashboard">
-      <h3>Dashboard</h3>
+      <h3>📊 Dashboard</h3>
       <p>Your quick overview of ministry activities.</p>
+      <span class="badge">Members Only</span>
     </div>
 
     <div class="card" id="pastor">
-      <h3>Pastor's Messages</h3>
+      <h3>🎤 Pastor's Messages</h3>
       <p>Preaching messages will be posted here.</p>
+      <span class="badge">Updated Weekly</span>
     </div>
 
     <div class="card" id="devotional">
-      <h3>Daily Devotional</h3>
+      <h3>📖 Daily Devotional</h3>
       <p>Start each day with God's Word.</p>
+      <span class="badge">New Every Morning</span>
     </div>
 
     <div class="card" id="attendance">
-      <h3>Attendance</h3>
+      <h3>✅ Attendance</h3>
       <p>Track service attendance.</p>
+      <span class="badge">Members Only</span>
     </div>
 
     <div class="card" id="announcements">
-      <h3>Announcements</h3>
-      <p>Top Partners | Announcements | Testimonies | Pastor's Space</p>
+      <h3>📢 Announcements</h3>
+      <p>Latest updates from the ministry.</p>
+      <div class="sub-list">
+        <span>Top Partners</span>
+        <span>Announcements</span>
+        <span>Testimonies</span>
+        <span>Pastor's Space</span>
+      </div>
     </div>
 
     <div class="card" id="communication">
-      <h3>Communication</h3>
+      <h3>💬 Communication</h3>
       <p>Stay connected with the ministry.</p>
+      <span class="badge">Members Only</span>
     </div>
 
     <div class="card" id="evangelism">
-      <h3>Evangelism</h3>
+      <h3>🌍 Evangelism</h3>
       <p>Reaching souls for Christ.</p>
+      <span class="badge">Outreach</span>
     </div>
 
     <div class="card" id="people">
-      <h3>People</h3>
-      <p>Our church family.</p>
+      <h3>👥 People</h3>
+      <p>Our church family and members.</p>
+      <span class="badge">Members Only</span>
     </div>
 
     <div class="card" id="moments">
-      <h3>Sunday Moments</h3>
-      <p>Photos from our services.</p>
+      <h3>📸 Sunday Moments</h3>
+      <p>Photos from our Sunday services.</p>
+      <span class="badge">Gallery</span>
     </div>
 
     <div class="card" id="ministry">
-      <h3>Ministry</h3>
-      <p>Foundation School & Cell Ministry</p>
+      <h3>⛪ Ministry</h3>
+      <p>Foundation School & Cell Ministry.</p>
+      <div class="sub-list">
+        <span>Foundation School</span>
+        <span>Cell Ministry</span>
+      </div>
     </div>
 
     <div class="card" id="account">
-      <h3>Account</h3>
-      <p>Manage your profile.</p>
+      <h3>👤 Account</h3>
+      <p>Manage your profile and settings.</p>
+      <span class="badge">Login Required</span>
     </div>
+
   </section>
 
   <footer>
-    © 2025 Tellworld Ministry. All rights reserved.
+    <strong>Tellworld Ministry</strong><br>
+    © 2025 All rights reserved.<br>
+    Built for the glory of God ✝
   </footer>
+
 </body>
-      </html>
+</html>
