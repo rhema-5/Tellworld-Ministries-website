@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Announcements — Tellworld Ministry</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="globe">TELL</div>
+      <div class="brand">
+        <h1>Tellworld Ministry</h1>
+        <p>Sharing the Gospel to the Ends of the Earth</p>
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html">Home</a>
+      <a href="pastor.html">Pastor</a>
+      <a href="devotional.html">Devotional</a>
+      <a href="announcements.html" class="active">Announcements</a>
+      <a href="ministry.html">Ministry</a>
+      <a href="moments.html">Moments</a>
+      <a href="evangelism.html">Evangelism</a>
+      <a href="events.html">Events</a>
+      <a href="giving.html">Giving</a>
+      <a href="prayer.html">Prayer</a>
+      <a href="login.html">Login</a>
+    </div>
+  </nav>
+
+  <div class="page-title">
+    <h2>📢 Announcements</h2>
+    <p>Latest updates from Tellworld Ministry</p>
+  </div>
+
+  <div class="container">
+    <a href="index.html" class="back-btn">← Back Home</a>
+
+    <div class="tabs">
+      <button class="active" onclick="showTab('partners', this)">Top Partners</button>
+      <button onclick="showTab('general', this)">Announcements</button>
+      <button onclick="showTab('testimonies', this)">Testimonies</button>
+      <button onclick="showTab('pastor-space', this)">Pastor's Space</button>
+    </div>
+
+    <div id="partners" class="tab-panel active">
+      <div class="post">
+        <h4>🏆 Top Partner — Sister Grace</h4>
+        <div class="meta">October 2025</div>
+        <p>Thank you for your faithful support and dedication to the ministry. You are a blessing!</p>
+      </div>
+      <div class="post">
+        <h4>🏆 Partner of the Month — Brother James</h4>
+        <div class="meta">September 2025</div>
+        <p>Your commitment to evangelism has brought many souls to Christ.</p>
+      </div>
+    </div>
+
+    <div id="general" class="tab-panel">
+      <div class="post">
+        <h4>📌 Sunday Service Time Change</h4>
+        <div class="meta">October 8, 2025</div>
+        <p>Starting this Sunday, our main service will begin at 9:00 AM instead of 9:30 AM. Please arrive early.</p>
+      </div>
+      <div class="post">
+        <h4>📌 Foundation School Resumes</h4>
+        <div class="meta">October 6, 2025</div>
+        <p>New Foundation School class starts on Saturday, October 18. All new members are encouraged to attend.</p>
+      </div>
+    </div>
+
+    <div id="testimonies" class="tab-panel">
+      <div class="post">
+        <h4>🙌 Healing Testimony — Sister Mary</h4>
+        <div class="meta">October 2025</div>
+        <p>"I was sick for 3 weeks, but after prayer, God healed me completely. To Him be all the glory!"</p>
+      </div>
+      <div class="post">
+        <h4>🙌 Job Breakthrough — Brother David</h4>
+        <div class="meta">September 2025</div>
+        <p>"After months of searching, God gave me a great job. He is faithful!"</p>
+      </div>
+    </div>
+
+    <div id="pastor-space" class="tab-panel">
+      <div class="post">
+        <h4>✝ From the Pastor's Desk</h4>
+        <div class="meta">October 8, 2025</div>
+        <p>Beloved, keep pressing forward. God is not done with you yet. Your best days are ahead. Stay faithful, stay prayerful.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="globe-sm"></span><strong>Tellworld Ministry</strong><br>
+    © 2025 All rights reserved.
+  </footer>
+
+  <script>
+    function showTab(id, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>
