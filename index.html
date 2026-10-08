@@ -8,183 +8,240 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f0f4fa;
-      color: #0f1f3d;
+      background: #0a1628;
+      color: #e6eefc;
       line-height: 1.6;
     }
 
     /* ---------- HEADER ---------- */
     header {
-      background: linear-gradient(135deg, #0f2557, #1e3a8a, #2563eb);
-      color: white;
-      padding: 18px 16px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      background: #061020;
+      padding: 16px;
+      border-bottom: 2px solid #2563eb;
+      position: sticky; top: 0; z-index: 200;
     }
-    .logo-wrap {
+    .header-inner {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 12px;
-      margin-bottom: 6px;
+      max-width: 1100px;
+      margin: 0 auto;
     }
     .globe {
-      width: 55px; height: 55px;
+      width: 52px; height: 52px;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #60a5fa, #1e3a8a 70%);
+      background:
+        radial-gradient(circle at 30% 30%, #34d399 0%, #10b981 35%, #2563eb 65%, #1e3a8a 100%);
       display: flex; align-items: center; justify-content: center;
-      font-weight: 900;
-      font-size: 13px;
-      letter-spacing: 1px;
+      font-weight: 900; font-size: 12px; letter-spacing: 1px;
       color: white;
-      border: 3px solid white;
-      box-shadow: 0 0 0 3px #2563eb;
+      border: 2px solid #ffffff22;
+      box-shadow: 0 0 18px #10b98155, 0 0 30px #2563eb44;
+      flex-shrink: 0;
     }
-    header h1 { font-size: 22px; letter-spacing: 1px; }
-    header p { font-size: 12px; opacity: 0.9; }
+    .brand h1 { font-size: 18px; color: white; letter-spacing: 0.5px; }
+    .brand p { font-size: 11px; color: #7fa3d4; }
 
     /* ---------- NAV ---------- */
     nav {
-      background: #0a1a3d;
-      padding: 8px 6px;
+      background: #061020;
+      padding: 8px;
+      border-bottom: 1px solid #1e3a8a55;
+    }
+    .nav-inner {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 6px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      gap: 5px;
+      max-width: 1100px;
+      margin: 0 auto;
     }
     nav a {
-      color: white;
+      color: #b9cdea;
       text-decoration: none;
-      font-size: 12px;
-      padding: 6px 10px;
+      font-size: 11.5px;
+      padding: 6px 11px;
       border-radius: 20px;
-      background: rgba(255,255,255,0.08);
+      border: 1px solid transparent;
       transition: 0.2s;
     }
-    nav a:hover { background: #2563eb; }
+    nav a:hover {
+      color: white;
+      background: #2563eb22;
+      border-color: #2563eb;
+    }
 
     /* ---------- HERO ---------- */
     .hero {
-      background: linear-gradient(135deg, #1e3a8a, #2563eb);
-      color: white;
-      padding: 45px 20px;
+      background: linear-gradient(135deg, #061020, #0f2557, #1e3a8a);
+      padding: 50px 20px;
       text-align: center;
-      margin: 14px;
-      border-radius: 14px;
-      box-shadow: 0 6px 20px rgba(30,58,138,0.3);
+      border-bottom: 2px solid #10b98155;
     }
-    .hero h2 { font-size: 24px; margin-bottom: 8px; }
-    .hero p { font-size: 14px; opacity: 0.95; }
+    .hero h2 { font-size: 26px; color: white; margin-bottom: 8px; }
+    .hero h2 span { color: #34d399; }
+    .hero p { font-size: 14px; color: #9fbde6; }
     .hero .verse {
-      margin-top: 14px;
+      margin: 16px auto 0;
+      max-width: 500px;
       font-style: italic;
       font-size: 13px;
-      opacity: 0.85;
+      color: #7fa3d4;
+      padding: 10px 14px;
+      border-left: 3px solid #10b981;
+      border-right: 3px solid #2563eb;
+      background: #0f255755;
+      border-radius: 8px;
     }
+    .login-btn {
+      display: inline-block;
+      margin-top: 20px;
+      background: #2563eb;
+      color: white;
+      padding: 11px 28px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      border: 1px solid #34d39955;
+      box-shadow: 0 4px 14px #2563eb66;
+    }
+    .login-btn:hover { background: #10b981; }
+
+    /* ---------- QUICK STATS ---------- */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-width: 700px;
+      margin: 20px auto 0;
+      padding: 0 16px;
+    }
+    .stat {
+      background: #0f255755;
+      border: 1px solid #2563eb55;
+      border-radius: 10px;
+      padding: 12px 6px;
+      text-align: center;
+    }
+    .stat strong { display: block; color: #34d399; font-size: 18px; }
+    .stat small { color: #7fa3d4; font-size: 10px; }
 
     /* ---------- SECTIONS ---------- */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 14px; }
     .section-title {
       text-align: center;
-      color: #0f2557;
-      font-size: 18px;
-      margin: 25px 0 8px;
+      color: white;
+      font-size: 19px;
+      margin: 40px 0 6px;
       font-weight: 700;
+    }
+    .section-sub {
+      text-align: center;
+      color: #7fa3d4;
+      font-size: 12px;
+      margin-bottom: 20px;
     }
     .section-title span {
       display: inline-block;
-      border-bottom: 3px solid #2563eb;
-      padding-bottom: 4px;
+      padding-bottom: 5px;
+      border-bottom: 3px solid #10b981;
     }
 
     .grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 14px;
-      padding: 10px 14px 30px;
+      padding-bottom: 30px;
     }
-    @media (min-width: 600px) {
-      .grid { grid-template-columns: 1fr 1fr; }
-    }
+    @media (min-width: 600px) { .grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 900px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
 
     .card {
-      background: white;
+      background: #0f2557;
       padding: 20px;
-      border-radius: 12px;
-      border-left: 5px solid #2563eb;
-      box-shadow: 0 3px 10px rgba(15,37,87,0.08);
-      transition: 0.2s;
+      border-radius: 14px;
+      border: 1px solid #1e3a8a;
+      position: relative;
+      transition: 0.25s;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, #2563eb, #10b981);
     }
     .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 18px rgba(15,37,87,0.15);
+      transform: translateY(-4px);
+      border-color: #10b981;
+      box-shadow: 0 10px 25px #00000060;
     }
     .card h3 {
-      color: #0f2557;
-      font-size: 16px;
+      color: white;
+      font-size: 15.5px;
       margin-bottom: 8px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .card p { font-size: 13px; color: #445; }
+    .card p { font-size: 12.5px; color: #9fbde6; }
 
     .badge {
       display: inline-block;
-      background: #dbeafe;
-      color: #1e3a8a;
-      font-size: 11px;
+      background: #10b98122;
+      color: #34d399;
+      font-size: 10.5px;
       padding: 3px 9px;
       border-radius: 20px;
       margin-top: 10px;
       font-weight: 600;
+      border: 1px solid #10b98155;
+    }
+    .badge.blue {
+      background: #2563eb22;
+      color: #7fb2ff;
+      border-color: #2563eb55;
     }
 
-    /* Sub-sections inside Announcements */
     .sub-list { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
     .sub-list span {
-      background: #eef4ff;
-      color: #1e3a8a;
-      font-size: 11px;
+      background: #061020;
+      color: #9fbde6;
+      font-size: 10.5px;
       padding: 4px 10px;
       border-radius: 12px;
-      border: 1px solid #c7dbff;
+      border: 1px solid #1e3a8a;
     }
 
     /* ---------- FOOTER ---------- */
     footer {
-      background: #0a1a3d;
-      color: #b9c8e6;
+      background: #061020;
+      color: #7fa3d4;
       text-align: center;
-      padding: 22px 16px;
+      padding: 25px 16px;
       font-size: 12px;
+      border-top: 2px solid #2563eb;
+      margin-top: 30px;
     }
     footer strong { color: white; }
-
-    /* ---------- LOGIN BUTTON ---------- */
-    .login-btn {
-      display: block;
-      width: fit-content;
-      margin: 0 auto 20px;
-      background: white;
-      color: #1e3a8a;
-      padding: 10px 24px;
-      border-radius: 25px;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 14px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    footer .globe-sm {
+      display: inline-block;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #34d399, #2563eb);
+      vertical-align: middle;
+      margin-right: 6px;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="logo-wrap">
+    <div class="header-inner">
       <div class="globe">TELL</div>
-      <div style="text-align:left;">
+      <div class="brand">
         <h1>Tellworld Ministry</h1>
         <p>Sharing the Gospel to the Ends of the Earth</p>
       </div>
@@ -192,109 +249,150 @@
   </header>
 
   <nav>
-    <a href="#dashboard">Dashboard</a>
-    <a href="#pastor">Pastor</a>
-    <a href="#devotional">Devotional</a>
-    <a href="#attendance">Attendance</a>
-    <a href="#announcements">Announcements</a>
-    <a href="#communication">Communication</a>
-    <a href="#evangelism">Evangelism</a>
-    <a href="#people">People</a>
-    <a href="#moments">Sunday Moments</a>
-    <a href="#ministry">Ministry</a>
-    <a href="#account">Account</a>
+    <div class="nav-inner">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#pastor">Pastor</a>
+      <a href="#devotional">Devotional</a>
+      <a href="#attendance">Attendance</a>
+      <a href="#announcements">Announcements</a>
+      <a href="#communication">Communication</a>
+      <a href="#evangelism">Evangelism</a>
+      <a href="#people">People</a>
+      <a href="#moments">Moments</a>
+      <a href="#ministry">Ministry</a>
+      <a href="#giving">Giving</a>
+      <a href="#prayer">Prayer</a>
+      <a href="#events">Events</a>
+      <a href="#account">Account</a>
+    </div>
   </nav>
 
   <section class="hero">
-    <h2>Welcome to Tellworld Ministry</h2>
+    <h2>Welcome to <span>Tellworld Ministry</span></h2>
     <p>A place of worship, growth, and fellowship.</p>
     <div class="verse">"Go into all the world and preach the gospel to all creation." — Mark 16:15</div>
-    <br>
     <a href="#account" class="login-btn">🔐 Member Login</a>
+
+    <div class="stats">
+      <div class="stat"><strong>200+</strong><small>Members</small></div>
+      <div class="stat"><strong>24/7</strong><small>Prayer</small></div>
+      <div class="stat"><strong>∞</strong><small>Grace</small></div>
+    </div>
   </section>
 
-  <h2 class="section-title"><span>Our Sections</span></h2>
+  <div class="container">
 
-  <section class="grid">
+    <h2 class="section-title"><span>Member Area</span></h2>
+    <p class="section-sub">Login required for these sections</p>
 
-    <div class="card" id="dashboard">
-      <h3>📊 Dashboard</h3>
-      <p>Your quick overview of ministry activities.</p>
-      <span class="badge">Members Only</span>
-    </div>
-
-    <div class="card" id="pastor">
-      <h3>🎤 Pastor's Messages</h3>
-      <p>Preaching messages will be posted here.</p>
-      <span class="badge">Updated Weekly</span>
-    </div>
-
-    <div class="card" id="devotional">
-      <h3>📖 Daily Devotional</h3>
-      <p>Start each day with God's Word.</p>
-      <span class="badge">New Every Morning</span>
-    </div>
-
-    <div class="card" id="attendance">
-      <h3>✅ Attendance</h3>
-      <p>Track service attendance.</p>
-      <span class="badge">Members Only</span>
-    </div>
-
-    <div class="card" id="announcements">
-      <h3>📢 Announcements</h3>
-      <p>Latest updates from the ministry.</p>
-      <div class="sub-list">
-        <span>Top Partners</span>
-        <span>Announcements</span>
-        <span>Testimonies</span>
-        <span>Pastor's Space</span>
+    <section class="grid">
+      <div class="card" id="dashboard">
+        <h3>📊 Dashboard</h3>
+        <p>Your quick overview of ministry activities, upcoming events, and personal updates.</p>
+        <span class="badge">Members Only</span>
       </div>
-    </div>
 
-    <div class="card" id="communication">
-      <h3>💬 Communication</h3>
-      <p>Stay connected with the ministry.</p>
-      <span class="badge">Members Only</span>
-    </div>
-
-    <div class="card" id="evangelism">
-      <h3>🌍 Evangelism</h3>
-      <p>Reaching souls for Christ.</p>
-      <span class="badge">Outreach</span>
-    </div>
-
-    <div class="card" id="people">
-      <h3>👥 People</h3>
-      <p>Our church family and members.</p>
-      <span class="badge">Members Only</span>
-    </div>
-
-    <div class="card" id="moments">
-      <h3>📸 Sunday Moments</h3>
-      <p>Photos from our Sunday services.</p>
-      <span class="badge">Gallery</span>
-    </div>
-
-    <div class="card" id="ministry">
-      <h3>⛪ Ministry</h3>
-      <p>Foundation School & Cell Ministry.</p>
-      <div class="sub-list">
-        <span>Foundation School</span>
-        <span>Cell Ministry</span>
+      <div class="card" id="attendance">
+        <h3>✅ Attendance</h3>
+        <p>Mark and track your service attendance each week.</p>
+        <span class="badge">Members Only</span>
       </div>
-    </div>
 
-    <div class="card" id="account">
-      <h3>👤 Account</h3>
-      <p>Manage your profile and settings.</p>
-      <span class="badge">Login Required</span>
-    </div>
+      <div class="card" id="people">
+        <h3>👥 People</h3>
+        <p>Our church family — members, leaders, and cell groups.</p>
+        <span class="badge">Members Only</span>
+      </div>
 
-  </section>
+      <div class="card" id="communication">
+        <h3>💬 Communication</h3>
+        <p>Message leaders, share updates, stay connected.</p>
+        <span class="badge">Members Only</span>
+      </div>
+
+      <div class="card" id="account">
+        <h3>👤 Account</h3>
+        <p>Manage your profile and login settings.</p>
+        <span class="badge">Login Required</span>
+      </div>
+    </section>
+
+    <h2 class="section-title"><span>Spiritual Growth</span></h2>
+    <p class="section-sub">Feed your soul daily</p>
+
+    <section class="grid">
+      <div class="card" id="pastor">
+        <h3>🎤 Pastor's Messages</h3>
+        <p>Weekly preaching messages and sermons from our pastor.</p>
+        <span class="badge blue">Updated Weekly</span>
+      </div>
+
+      <div class="card" id="devotional">
+        <h3>📖 Daily Devotional</h3>
+        <p>Start each morning with God's Word and prayer.</p>
+        <span class="badge blue">New Every Morning</span>
+      </div>
+
+      <div class="card" id="prayer">
+        <h3>🙏 Prayer Requests</h3>
+        <p>Submit prayer requests and pray for one another.</p>
+        <span class="badge blue">Open to All</span>
+      </div>
+
+      <div class="card" id="ministry">
+        <h3>⛪ Ministry</h3>
+        <p>Grow deeper through our training and fellowship programs.</p>
+        <div class="sub-list">
+          <span>Foundation School</span>
+          <span>Cell Ministry</span>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="section-title"><span>Ministry Life</span></h2>
+    <p class="section-sub">Stay updated with everything happening</p>
+
+    <section class="grid">
+      <div class="card" id="announcements">
+        <h3>📢 Announcements</h3>
+        <p>Latest updates and important information.</p>
+        <div class="sub-list">
+          <span>Top Partners</span>
+          <span>Announcements</span>
+          <span>Testimonies</span>
+          <span>Pastor's Space</span>
+        </div>
+      </div>
+
+      <div class="card" id="evangelism">
+        <h3>🌍 Evangelism</h3>
+        <p>Reaching souls for Christ in our community and beyond.</p>
+        <span class="badge blue">Outreach</span>
+      </div>
+
+      <div class="card" id="moments">
+        <h3>📸 Sunday Moments</h3>
+        <p>Photos and highlights from our Sunday services.</p>
+        <span class="badge blue">Gallery</span>
+      </div>
+
+      <div class="card" id="events">
+        <h3>📅 Events Calendar</h3>
+        <p>Upcoming services, programs, and special events.</p>
+        <span class="badge blue">Stay Updated</span>
+      </div>
+
+      <div class="card" id="giving">
+        <h3>💚 Giving & Offerings</h3>
+        <p>Give your tithes and offerings securely.</p>
+        <span class="badge blue">Blessing Others</span>
+      </div>
+    </section>
+
+  </div>
 
   <footer>
-    <strong>Tellworld Ministry</strong><br>
+    <span class="globe-sm"></span><strong>Tellworld Ministry</strong><br>
     © 2025 All rights reserved.<br>
     Built for the glory of God ✝
   </footer>
