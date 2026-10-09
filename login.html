@@ -22,21 +22,32 @@
     <a href="index.html" class="back-btn">← Back Home</a>
 
     <div class="form-wrap">
-      <h3>Member Login</h3>
-      <p class="sub">Welcome back to Tellworld Ministry</p>
+      <h3 id="form-title">Member Login</h3>
+      <p class="sub" id="form-sub">Welcome back to Tellworld Ministry</p>
 
-      <form onsubmit="event.preventDefault(); alert('Login system coming soon in Step 9!');">
-        <label>Email or Name</label>
-        <input type="text" placeholder="Enter email or your name" required>
+      <form id="auth-form">
+        <div id="signup-fields" style="display:none;">
+          <label>Full Name</label>
+          <input type="text" id="name" placeholder="Enter your full name">
 
-        <label>Phone Number (as password)</label>
-        <input type="tel" placeholder="Enter your phone number" required>
+          <label>Phone Number</label>
+          <input type="tel" id="phone" placeholder="Enter your phone number">
+        </div>
 
-        <button type="submit">Login</button>
+        <label>Email</label>
+        <input type="email" id="email" placeholder="Enter your email" required>
+
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required minlength="6">
+
+        <button type="submit" id="submit-btn">Login</button>
       </form>
 
+      <p id="error-msg" style="color:#ff6b6b; font-size:12px; text-align:center; margin-top:12px;"></p>
+
       <p class="form-note">
-        New here? Contact the admin to register.
+        <span id="toggle-text">New here?</span>
+        <a href="#" id="toggle-link">Create an account</a>
       </p>
     </div>
   </div>
@@ -46,5 +57,70 @@
     © 2025 All rights reserved.
   </footer>
 
+  <!-- Load Firebase config FIRST, then the auth module -->
+  <script src="firebase-config.js"></script>
+  <script type="module">
+    import { signup, login } from "./auth.js";
+
+    let isSignup = false;
+    const form = document.getElementById("auth-form");
+    const title = document.getElementById("form-title");
+    const sub = document.getElementById("form-sub");
+    const submitBtn = document.getElementById("submit-btn");
+    const signupFields = document.getElementById("signup-fields");
+    const toggleText = document.getElementById("toggle-text");
+    const toggleLink = document.getElementById("toggle-link");
+    const errorMsg = document.getElementById("error-msg");
+
+    toggleLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      isSignup = !isSignup;
+      errorMsg.textContent = "";
+      if (isSignup) {
+        title.textContent = "Create Account";
+        sub.textContent = "Join the Tellworld Ministry family";
+        submitBtn.textContent = "Sign Up";
+        signupFields.style.display = "block";
+        toggleText.textContent = "Already have an account?";
+        toggleLink.textContent = "Login instead";
+      } else {
+        title.textContent = "Member Login";
+        sub.textContent = "Welcome back to Tellworld Ministry";
+        submitBtn.textContent = "Login";
+        signupFields.style.display = "none";
+        toggleText.textContent = "New here?";
+        toggleLink.textContent = "Create an account";
+      }
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorMsg.textContent = "";
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Please wait...";
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      try {
+        if (isSignup) {
+          const name = document.getElementById("name").value.trim();
+          const phone = document.getElementById("phone").value.trim();
+          if (!name || !phone) {
+            throw new Error("Please fill in your name and phone number.");
+          }
+          await signup(name, phone, email, password);
+        } else {
+          await login(email, password);
+        }
+        window.location.href = "dashboard.html";
+      } catch (err) {
+        errorMsg.textContent = err.message.replace("Firebase: ", "");
+        submitBtn.disabled = false;
+        submitBtn.textContent = isSignup ? "Sign Up" : "Login";
+      }
+    });
+  </script>
+
 </body>
-</html>
+  </html>
