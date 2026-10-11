@@ -71,8 +71,14 @@
         <h3>📖 Today's Devotional</h3>
         <p>Feed your soul with God's Word.</p>
         <span class="badge blue">Read</span>
-      </a>
-
+      </a> 
+      
+      <a href="admin.html" class="card" id="admin-card" style="display:none;">
+        <h3>🛠 Admin Panel</h3>
+        <p>Post messages, devotionals, and announcements.</p>
+        <span class="badge">Admin Only</span>
+      </a> 
+      
       <a href="events.html" class="card">
         <h3>📅 Upcoming Events</h3>
         <p>See what's happening this month.</p>
@@ -102,7 +108,11 @@
 
     // Show user info
     watchAuth(async (user) => {
-      if (user) {
+      if (user) { // Show admin card only for admin account
+    const ADMIN_UID = "A6d5dQxVQSh88XPMJ6MgpPiWlT82";
+    if (user.uid === ADMIN_UID) {
+      document.getElementById("admin-card").style.display = "block";
+    }
         document.getElementById("user-name").textContent = user.displayName || "Member";
         document.getElementById("p-name").textContent = user.displayName || "—";
         document.getElementById("p-email").textContent = user.email || "—";
