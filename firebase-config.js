@@ -9,4 +9,4 @@ const firebaseConfig = {
   measurementId: "G-PMWGJVGK84"
 };
 // Make config available globally for auth.js
-window.firebaseConfig = firebaseConfig;;
+window.firebaseConfig = firebaseConfig;
