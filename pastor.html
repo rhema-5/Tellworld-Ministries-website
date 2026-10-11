@@ -67,7 +67,6 @@
         const q = query(
           collection(db, "posts"),
           where("type", "==", "pastor"),
-          orderBy("createdAt", "desc")
         );
         const snap = await getDocs(q);
         if (snap.empty) {
@@ -75,17 +74,26 @@
           return;
         }
         container.innerHTML = "";
-        snap.forEach((d) => {
-          const p = d.data();
-          const el = document.createElement("div");
-          el.className = "post";
-          el.innerHTML = `
-            <h4>${esc(p.title)}</h4>
-            <div class="meta">📅 ${date(p.createdAt)}</div>
-            <p>${esc(p.body).replace(/\n/g, "<br>")}</p>
-          `;
-          container.appendChild(el);
-        });
+        const items = [];
+snap.forEach((d) => items.push(d.data()));
+
+// Sort in JS instead of Firestore
+items.sort((a, b) => {
+  const ta = a.createdAt?.seconds || 0;
+  const tb = b.createdAt?.seconds || 0;
+  return tb - ta;
+});
+
+items.forEach((p) => {
+  const el = document.createElement("div");
+  el.className = "post";
+  el.innerHTML = `
+    <h4>${esc(p.title)}</h4>
+    <div class="meta">📅 ${date(p.createdAt)}</div>
+    <p>${esc(p.body).replace(/\n/g, "<br>")}</p>
+  `;
+  container.appendChild(el);
+});
       } catch (err) {
         container.innerHTML = `<p style='text-align:center; color:#ff6b6b; font-size:12px;'>${err.message}</p>`;
       }
