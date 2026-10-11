@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Tellworld Ministry</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="globe">TELL</div>
+      <div class="brand">
+        <h1>Tellworld Ministry</h1>
+        <p>Admin Panel</p>
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="admin.html" class="active">Admin</a>
+      <a href="#" id="logout-link">Logout</a>
+    </div>
+  </nav>
+
+  <div class="page-title">
+    <h2>🛠 Admin Panel</h2>
+    <p>Post new content — no coding needed</p>
+  </div>
+
+  <div class="container">
+    <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
+
+    <div class="form-wrap" style="max-width:560px;">
+      <h3>Create New Post</h3>
+      <p class="sub">Fill the form and tap Publish</p>
+
+      <form id="post-form">
+        <label>Post Type</label>
+        <select id="post-type">
+          <option value="pastor">🎤 Pastor's Message</option>
+          <option value="devotional">📖 Daily Devotional</option>
+          <option value="announcement">📢 Announcement</option>
+          <option value="testimony">🙌 Testimony</option>
+        </select>
+
+        <label>Title</label>
+        <input type="text" id="post-title" placeholder="e.g., The Power of Faith" required>
+
+        <label>Content</label>
+        <textarea id="post-body" rows="6" placeholder="Type the message here..." required></textarea>
+
+        <button type="submit">Publish Post</button>
+      </form>
+
+      <p id="admin-msg" style="text-align:center; font-size:13px; margin-top:12px; color:#34d399;"></p>
+    </div>
+
+    <h2 class="section-title" style="margin-top:35px;"><span>Your Posts</span></h2>
+    <div id="posts-list"></div>
+  </div>
+
+  <footer>
+    <span class="globe-sm"></span><strong>Tellworld Ministry</strong><br>
+    © 2025 All rights reserved.
+  </footer>
+
+  <script src="firebase-config.js"></script>
+  <script type="module">
+    import { requireLogin, watchAuth, logout } from "./auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, getDocs, deleteDoc, doc,
+      query, orderBy, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    requireLogin();
+    document.getElementById("logout-link").addEventListener("click", (e) => {
+      e.preventDefault(); logout();
+    });
+
+    const app = initializeApp(window.firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("post-form");
+    const msg = document.getElementById("admin-msg");
+    const list = document.getElementById("posts-list");
+
+    // Load existing posts
+    async function loadPosts() {
+      list.innerHTML = "<p style='text-align:center; color:#7fa3d4; font-size:12px;'>Loading...</p>";
+      try {
+        const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+        const snap = await getDocs(q);
+        if (snap.empty) {
+          list.innerHTML = "<p style='text-align:center; color:#7fa3d4; font-size:12px;'>No posts yet. Create your first one above.</p>";
+          return;
+        }
+        list.innerHTML = "";
+        snap.forEach((docSnap) => {
+          const d = docSnap.data();
+          const el = document.createElement("div");
+          el.className = "post";
+          el.innerHTML = `
+            <h4>${escapeHtml(d.title)}</h4>
+            <div class="meta">${typeLabel(d.type)} • ${formatDate(d.createdAt)}</div>
+            <p>${escapeHtml(d.body).substring(0, 160)}${d.body.length > 160 ? "..." : ""}</p>
+            <div class="actions">
+              <a href="#" data-del="${docSnap.id}" style="color:#ff6b6b; border-color:#ff6b6b55;">🗑 Delete</a>
+            </div>
+          `;
+          list.appendChild(el);
+        });
+
+        // Attach delete handlers
+        list.querySelectorAll("[data-del]").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            if (!confirm("Delete this post?")) return;
+            await deleteDoc(doc(db, "posts", btn.dataset.del));
+            loadPosts();
+          });
+        });
+      } catch (err) {
+        list.innerHTML = `<p style='text-align:center; color:#ff6b6b; font-size:12px;'>${err.message}</p>`;
+      }
+    }
+
+    // Submit new post
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msg.textContent = "Publishing...";
+      msg.style.color = "#7fa3d4";
+      try {
+        await addDoc(collection(db, "posts"), {
+          type: document.getElementById("post-type").value,
+          title: document.getElementById("post-title").value.trim(),
+          body: document.getElementById("post-body").value.trim(),
+          createdAt: serverTimestamp()
+        });
+        form.reset();
+        msg.textContent = "✅ Post published!";
+        msg.style.color = "#34d399";
+        loadPosts();
+      } catch (err) {
+        msg.textContent = "❌ " + err.message.replace("Firebase: ", "");
+        msg.style.color = "#ff6b6b";
+      }
+    });
+
+    function typeLabel(t) {
+      return { pastor: "🎤 Pastor's Message", devotional: "📖 Devotional",
+               announcement: "📢 Announcement", testimony: "🙌 Testimony" }[t] || t;
+    }
+    function formatDate(ts) {
+      if (!ts) return "Just now";
+      try { return ts.toDate().toLocaleDateString(); } catch { return "—"; }
+    }
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c]));
+    }
+
+    watchAuth((user) => {
+      if (user) loadPosts();
+    });
+  </script>
+
+</body>
+  </html>
