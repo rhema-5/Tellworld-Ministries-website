@@ -69,110 +69,117 @@
   </footer>
 
   <script src="firebase-config.js"></script>
-  <script type="module">
-    import { requireLogin, watchAuth, logout } from "./auth.js";
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import {
-      getFirestore, collection, addDoc, getDocs, deleteDoc, doc,
-      query, orderBy, serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<script src="firebase-config.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, getDocs, deleteDoc, doc,
+    query, orderBy, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    requireLogin();
-    document.getElementById("logout-link").addEventListener("click", (e) => {
-      e.preventDefault(); logout();
-    });
+  const app = initializeApp(window.firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    const app = initializeApp(window.firebaseConfig);
-    const db = getFirestore(app);
+  const form = document.getElementById("post-form");
+  const msg = document.getElementById("admin-msg");
+  const list = document.getElementById("posts-list");
 
-    const form = document.getElementById("post-form");
-    const msg = document.getElementById("admin-msg");
-    const list = document.getElementById("posts-list");
-
-    // Load existing posts
-    async function loadPosts() {
-      list.innerHTML = "<p style='text-align:center; color:#7fa3d4; font-size:12px;'>Loading...</p>";
-      try {
-        const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-        const snap = await getDocs(q);
-        if (snap.empty) {
-          list.innerHTML = "<p style='text-align:center; color:#7fa3d4; font-size:12px;'>No posts yet. Create your first one above.</p>";
-          return;
-        }
-        list.innerHTML = "";
-        snap.forEach((docSnap) => {
-          const d = docSnap.data();
-          const el = document.createElement("div");
-          el.className = "post";
-          el.innerHTML = `
-            <h4>${escapeHtml(d.title)}</h4>
-            <div class="meta">${typeLabel(d.type)} • ${formatDate(d.createdAt)}</div>
-            <p>${escapeHtml(d.body).substring(0, 160)}${d.body.length > 160 ? "..." : ""}</p>
-            <div class="actions">
-              <a href="#" data-del="${docSnap.id}" style="color:#ff6b6b; border-color:#ff6b6b55;">🗑 Delete</a>
-            </div>
-          `;
-          list.appendChild(el);
-        });
-
-        // Attach delete handlers
-        list.querySelectorAll("[data-del]").forEach((btn) => {
-          btn.addEventListener("click", async (e) => {
-            e.preventDefault();
-            if (!confirm("Delete this post?")) return;
-            await deleteDoc(doc(db, "posts", btn.dataset.del));
-            loadPosts();
-          });
-        });
-      } catch (err) {
-        list.innerHTML = `<p style='text-align:center; color:#ff6b6b; font-size:12px;'>${err.message}</p>`;
+  // LOAD POSTS
+  async function loadPosts() {
+    list.innerHTML = "<p style='text-align:center; color:#7fa3d4; font-size:12px;'>Loading...</p>";
+    try {
+      const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        list.innerHTML = "<p style='text-align:center; color:#7fa3d4; font-size:12px;'>No posts yet. Create your first one above.</p>";
+        return;
       }
-    }
-
-    // Submit new post
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      msg.textContent = "Publishing...";
-      msg.style.color = "#7fa3d4";
-      try {
-        await addDoc(collection(db, "posts"), {
-          type: document.getElementById("post-type").value,
-          title: document.getElementById("post-title").value.trim(),
-          body: document.getElementById("post-body").value.trim(),
-          createdAt: serverTimestamp()
+      list.innerHTML = "";
+      snap.forEach((docSnap) => {
+        const d = docSnap.data();
+        const el = document.createElement("div");
+        el.className = "post";
+        el.innerHTML = `
+          <h4>${escapeHtml(d.title)}</h4>
+          <div class="meta">${typeLabel(d.type)} • ${formatDate(d.createdAt)}</div>
+          <p>${escapeHtml(d.body).substring(0, 160)}${d.body.length > 160 ? "..." : ""}</p>
+          <div class="actions">
+            <a href="#" data-del="${docSnap.id}" style="color:#ff6b6b; border-color:#ff6b6b55;">🗑 Delete</a>
+          </div>
+        `;
+        list.appendChild(el);
+      });
+      list.querySelectorAll("[data-del]").forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          if (!confirm("Delete this post?")) return;
+          await deleteDoc(doc(db, "posts", btn.dataset.del));
+          loadPosts();
         });
-        form.reset();
-        msg.textContent = "✅ Post published!";
-        msg.style.color = "#34d399";
-        loadPosts();
-      } catch (err) {
-        msg.textContent = "❌ " + err.message.replace("Firebase: ", "");
-        msg.style.color = "#ff6b6b";
-      }
-    });
-
-    function typeLabel(t) {
-      return { pastor: "🎤 Pastor's Message", devotional: "📖 Devotional",
-               announcement: "📢 Announcement", testimony: "🙌 Testimony" }[t] || t;
+      });
+    } catch (err) {
+      list.innerHTML = `<p style='text-align:center; color:#ff6b6b; font-size:12px;'>${err.message}</p>`;
     }
-    function formatDate(ts) {
-      if (!ts) return "Just now";
-      try { return ts.toDate().toLocaleDateString(); } catch { return "—"; }
-    }
-    function escapeHtml(s) {
-      return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c]));
-    }
-
-    watchAuth((user) => {
-  if (!user) {
-    window.location.href = "login.html";
-    return;
   }
-  // Show the page once we know the user is logged in
-  document.body.style.visibility = "visible";
-  loadPosts();
-});
-  </script>
+
+  // SUBMIT POST
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.textContent = "Publishing...";
+    msg.style.color = "#7fa3d4";
+    try {
+      await addDoc(collection(db, "posts"), {
+        type: document.getElementById("post-type").value,
+        title: document.getElementById("post-title").value.trim(),
+        body: document.getElementById("post-body").value.trim(),
+        createdAt: serverTimestamp()
+      });
+      form.reset();
+      msg.textContent = "✅ Post published!";
+      msg.style.color = "#34d399";
+      loadPosts();
+    } catch (err) {
+      msg.textContent = "❌ " + err.message.replace("Firebase: ", "");
+      msg.style.color = "#ff6b6b";
+    }
+  });
+
+  // LOGOUT
+  document.getElementById("logout-link").addEventListener("click", async (e) => {
+    e.preventDefault();
+    await auth.signOut();
+    window.location.href = "index.html";
+  });
+
+  // AUTH GUARD — the most important part
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      // NOT LOGGED IN → redirect to login page
+      window.location.href = "login.html";
+    } else {
+      // LOGGED IN → show the page and load posts
+      document.body.style.visibility = "visible";
+      loadPosts();
+    }
+  });
+
+  // Helpers
+  function typeLabel(t) {
+    return { pastor: "🎤 Pastor's Message", devotional: "📖 Devotional",
+             announcement: "📢 Announcement", testimony: "🙌 Testimony" }[t] || t;
+  }
+  function formatDate(ts) {
+    if (!ts) return "Just now";
+    try { return ts.toDate().toLocaleDateString(); } catch { return "—"; }
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c]));
+  }
+</script>
 
 </body>
   </html>
