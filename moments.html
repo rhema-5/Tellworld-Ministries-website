@@ -5,6 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sunday Moments — Tellworld Ministry</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .moment-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding-bottom: 30px;
+    }
+    @media (min-width: 700px) {
+      .moment-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .moment {
+      background: #0f2557;
+      border: 1px solid #1e3a8a;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .moment img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+      background: #061020;
+    }
+    .moment .caption {
+      padding: 10px;
+    }
+    .moment .caption h4 {
+      color: white;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .moment .caption .meta {
+      color: #7fa3d4;
+      font-size: 10.5px;
+    }
+  </style>
 </head>
 <body>
 
@@ -28,4 +66,84 @@
       <a href="moments.html" class="active">Moments</a>
       <a href="evangelism.html">Evangelism</a>
       <a href="events.html">Events</a>
-      <
+      <a href="giving.html">Giving</a>
+      <a href="prayer.html">Prayer</a>
+      <a href="login.html">Login</a>
+    </div>
+  </nav>
+
+  <div class="page-title">
+    <h2>📸 Sunday Moments</h2>
+    <p>Cherished memories from our services</p>
+  </div>
+
+  <div class="container">
+    <a href="index.html" class="back-btn">← Back Home</a>
+    <div id="moments-container" class="moment-grid">
+      <p style="text-align:center; color:#7fa3d4; font-size:12px; grid-column:1/-1;">Loading photos...</p>
+    </div>
+  </div>
+
+  <footer>
+    <span class="globe-sm"></span><strong>Tellworld Ministry</strong><br>
+    © 2025 All rights reserved.
+  </footer>
+
+  <script src="firebase-config.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, query, where
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const app = initializeApp(window.firebaseConfig);
+    const db = getFirestore(app);
+    const container = document.getElementById("moments-container");
+
+    async function load() {
+      try {
+        const q = query(collection(db, "posts"), where("type", "==", "moment"));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          container.innerHTML = "<p style='text-align:center; color:#7fa3d4; font-size:12px; grid-column:1/-1;'>No photos yet. Check back soon!</p>";
+          return;
+        }
+
+        const items = [];
+        snap.forEach((d) => items.push(d.data()));
+        items.sort((a, b) => {
+          const ta = a.createdAt?.seconds || 0;
+          const tb = b.createdAt?.seconds || 0;
+          return tb - ta;
+        });
+
+        container.innerHTML = "";
+        items.forEach((p) => {
+          if (!p.imageUrl) return;
+          const el = document.createElement("div");
+          el.className = "moment";
+          el.innerHTML = `
+            <a href="${esc(p.imageUrl)}" target="_blank" rel="noopener">
+              <img src="${esc(p.imageUrl)}" alt="${esc(p.title)}" loading="lazy">
+            </a>
+            <div class="caption">
+              <h4>${esc(p.title)}</h4>
+              <div class="meta">📅 ${date(p.createdAt)}</div>
+            </div>
+          `;
+          container.appendChild(el);
+        });
+      } catch (err) {
+        container.innerHTML = `<p style='text-align:center; color:#ff6b6b; font-size:12px; grid-column:1/-1;'>${err.message}</p>`;
+      }
+    }
+
+    function esc(s) { return String(s || "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c])); }
+    function date(ts) { try { return ts.toDate().toLocaleDateString(); } catch { return "—"; } }
+
+    load();
+  </script>
+
+</body>
+</html>
