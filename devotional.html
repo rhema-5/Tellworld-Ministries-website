@@ -41,32 +41,70 @@
 
   <div class="container">
     <a href="index.html" class="back-btn">← Back Home</a>
-
-    <div class="post" style="border-left-color:#2563eb;">
-      <h4>Today's Devotional — October 8, 2025</h4>
-      <div class="meta">📖 Psalm 23:1 — "The Lord is my shepherd; I shall not want."</div>
-      <p><strong style="color:#34d399;">Reflection:</strong> When we truly know God as our Shepherd, worry loses its grip on us. He provides, He guides, He protects. Today, pause and thank Him for His faithful care over your life.</p>
-      <p style="margin-top:10px;"><strong style="color:#34d399;">Prayer:</strong> Father, thank You for being my Shepherd. I trust You to lead me today. Amen.</p>
+    <div id="posts-container">
+      <p style="text-align:center; color:#7fa3d4; font-size:12px;">Loading devotionals...</p>
     </div>
-
-    <div class="post" style="border-left-color:#2563eb;">
-      <h4>Yesterday — October 7, 2025</h4>
-      <div class="meta">📖 Philippians 4:13 — "I can do all things through Christ who strengthens me."</div>
-      <p>Strength is not in ourselves — it is in Christ working through us. Whatever challenge you face today, His strength is sufficient.</p>
-    </div>
-
-    <div class="post" style="border-left-color:#2563eb;">
-      <h4>October 6, 2025</h4>
-      <div class="meta">📖 Isaiah 41:10 — "Fear not, for I am with you."</div>
-      <p>God's presence is our greatest comfort. We are never alone, never abandoned, never forgotten.</p>
-    </div>
-
   </div>
 
   <footer>
     <span class="globe-sm"></span><strong>Tellworld Ministry</strong><br>
     © 2025 All rights reserved.
   </footer>
+
+  <script src="firebase-config.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, query, where
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const app = initializeApp(window.firebaseConfig);
+    const db = getFirestore(app);
+    const container = document.getElementById("posts-container");
+
+    async function load() {
+      try {
+        const q = query(
+          collection(db, "posts"),
+          where("type", "==", "devotional")
+        );
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          container.innerHTML = "<p style='text-align:center; color:#7fa3d4; font-size:12px;'>No devotionals yet. Check back soon!</p>";
+          return;
+        }
+
+        const items = [];
+        snap.forEach((d) => items.push(d.data()));
+        items.sort((a, b) => {
+          const ta = a.createdAt?.seconds || 0;
+          const tb = b.createdAt?.seconds || 0;
+          return tb - ta;
+        });
+
+        container.innerHTML = "";
+        items.forEach((p) => {
+          const el = document.createElement("div");
+          el.className = "post";
+          el.style.borderLeftColor = "#2563eb";
+          el.innerHTML = `
+            <h4>${esc(p.title)}</h4>
+            <div class="meta">📖 ${date(p.createdAt)}</div>
+            <p>${esc(p.body).replace(/\n/g, "<br>")}</p>
+          `;
+          container.appendChild(el);
+        });
+      } catch (err) {
+        container.innerHTML = `<p style='text-align:center; color:#ff6b6b; font-size:12px;'>${err.message}</p>`;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c])); }
+    function date(ts) { try { return ts.toDate().toLocaleDateString(); } catch { return "—"; } }
+
+    load();
+  </script>
 
 </body>
 </html>
