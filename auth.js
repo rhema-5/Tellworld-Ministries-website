@@ -66,7 +66,8 @@ export async function getUserProfile(uid) {
 export function requireLogin() {
   onAuthStateChanged(auth, (user) => {
     if (!user) {
-      window.location.href = "login.html";
+      // Absolute path ensures no confusion with GitHub Pages
+      window.location.replace("login.html");
     }
   });
 }
