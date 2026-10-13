@@ -40,19 +40,27 @@
 
       <form id="post-form">
         <label>Post Type</label>
-        <select id="post-type">
-          <option value="pastor">🎤 Pastor's Message</option>
-          <option value="devotional">📖 Daily Devotional</option>
-          <option value="announcement">📢 Announcement</option>
-          <option value="testimony">🙌 Testimony</option>
-        </select>
+<select id="post-type">
+  <option value="pastor">🎤 Pastor's Message</option>
+  <option value="devotional">📖 Daily Devotional</option>
+  <option value="announcement">📢 Announcement</option>
+  <option value="testimony">🙌 Testimony</option>
+  <option value="moment">📸 Sunday Moment (Photo)</option>
+</select>
 
-        <label>Title</label>
-        <input type="text" id="post-title" placeholder="e.g., The Power of Faith" required>
+        <label>Title / Caption</label>
+<input type="text" id="post-title" placeholder="e.g., Sunday Service Highlights" required>
 
-        <label>Content</label>
-        <textarea id="post-body" rows="6" placeholder="Type the message here..." required></textarea>
+<label id="content-label">Content</label>
+<textarea id="post-body" rows="6" placeholder="Type the message here..." required></textarea>
 
+<div id="image-field" style="display:none;">
+  <label>Image URL</label>
+  <input type="url" id="post-image" placeholder="https://i.ibb.co/xxxxx/photo.jpg">
+  <p style="font-size:11px; color:#7fa3d4; margin-top:6px;">
+    Paste a link from imgbb.com or any image host.
+  </p>
+</div>
         <button type="submit">Publish Post</button>
       </form>
 
@@ -85,6 +93,22 @@
   const db = getFirestore(app);
 
   const form = document.getElementById("post-form");
+  const postTypeSelect = document.getElementById("post-type");
+const contentLabel = document.getElementById("content-label");
+const postBody = document.getElementById("post-body");
+const imageField = document.getElementById("image-field");
+
+postTypeSelect.addEventListener("change", () => {
+  if (postTypeSelect.value === "moment") {
+    contentLabel.style.display = "none";
+    postBody.style.display = "none";
+    imageField.style.display = "block";
+  } else {
+    contentLabel.style.display = "block";
+    postBody.style.display = "block";
+    imageField.style.display = "none";
+  }
+});
   const msg = document.getElementById("admin-msg");
   const list = document.getElementById("posts-list");
 
@@ -132,21 +156,20 @@
     msg.textContent = "Publishing...";
     msg.style.color = "#7fa3d4";
     try {
-      await addDoc(collection(db, "posts"), {
-        type: document.getElementById("post-type").value,
-        title: document.getElementById("post-title").value.trim(),
-        body: document.getElementById("post-body").value.trim(),
-        createdAt: serverTimestamp()
-      });
-      form.reset();
-      msg.textContent = "✅ Post published!";
-      msg.style.color = "#34d399";
-      loadPosts();
-    } catch (err) {
-      msg.textContent = "❌ " + err.message.replace("Firebase: ", "");
-      msg.style.color = "#ff6b6b";
-    }
-  });
+      const postType = document.getElementById("post-type").value;
+const postData = {
+  type: postType,
+  title: document.getElementById("post-title").value.trim(),
+  body: document.getElementById("post-body").value.trim(),
+  createdAt: serverTimestamp()
+};
+
+// For Sunday Moment, also save the image URL
+if (postType === "moment") {
+  postData.imageUrl = document.getElementById("post-image").value.trim();
+}
+
+await addDoc(collection(db, "posts"), postData);
 
   // LOGOUT
   document.getElementById("logout-link").addEventListener("click", async (e) => {
