@@ -63,36 +63,18 @@
     </div>
 
     <div id="general" class="tab-panel">
-      <div class="post">
-        <h4>📌 Sunday Service Time Change</h4>
-        <div class="meta">October 8, 2025</div>
-        <p>Starting this Sunday, our main service will begin at 9:00 AM instead of 9:30 AM. Please arrive early.</p>
-      </div>
-      <div class="post">
-        <h4>📌 Foundation School Resumes</h4>
-        <div class="meta">October 6, 2025</div>
-        <p>New Foundation School class starts on Saturday, October 18. All new members are encouraged to attend.</p>
-      </div>
+      <p style="text-align:center; color:#7fa3d4; font-size:12px;">Loading announcements...</p>
     </div>
 
     <div id="testimonies" class="tab-panel">
-      <div class="post">
-        <h4>🙌 Healing Testimony — Sister Mary</h4>
-        <div class="meta">October 2025</div>
-        <p>"I was sick for 3 weeks, but after prayer, God healed me completely. To Him be all the glory!"</p>
-      </div>
-      <div class="post">
-        <h4>🙌 Job Breakthrough — Brother David</h4>
-        <div class="meta">September 2025</div>
-        <p>"After months of searching, God gave me a great job. He is faithful!"</p>
-      </div>
+      <p style="text-align:center; color:#7fa3d4; font-size:12px;">Loading testimonies...</p>
     </div>
 
     <div id="pastor-space" class="tab-panel">
       <div class="post">
         <h4>✝ From the Pastor's Desk</h4>
         <div class="meta">October 8, 2025</div>
-        <p>Beloved, keep pressing forward. God is not done with you yet. Your best days are ahead. Stay faithful, stay prayerful.</p>
+        <p>Beloved, keep pressing forward. God is not done with you yet. Your best days are ahead.</p>
       </div>
     </div>
   </div>
@@ -102,13 +84,67 @@
     © 2025 All rights reserved.
   </footer>
 
-  <script>
-    function showTab(id, btn) {
+  <script src="firebase-config.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, query, where
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const app = initializeApp(window.firebaseConfig);
+    const db = getFirestore(app);
+
+    // Tab switching
+    window.showTab = function(id, btn) {
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
       document.getElementById(id).classList.add('active');
       btn.classList.add('active');
+    };
+
+    // Load posts of a given type into a container
+    async function loadType(type, containerId) {
+      const container = document.getElementById(containerId);
+      try {
+        const q = query(collection(db, "posts"), where("type", "==", type));
+        const snap = await getDocs(q);
+
+        if (snap.empty) {
+          container.innerHTML = `<p style='text-align:center; color:#7fa3d4; font-size:12px;'>No ${type}s yet.</p>`;
+          return;
+        }
+
+        const items = [];
+        snap.forEach((d) => items.push(d.data()));
+        items.sort((a, b) => {
+          const ta = a.createdAt?.seconds || 0;
+          const tb = b.createdAt?.seconds || 0;
+          return tb - ta;
+        });
+
+        container.innerHTML = "";
+        items.forEach((p) => {
+          const el = document.createElement("div");
+          el.className = "post";
+          el.innerHTML = `
+            <h4>${esc(p.title)}</h4>
+            <div class="meta">📅 ${date(p.createdAt)}</div>
+            <p>${esc(p.body).replace(/\n/g, "<br>")}</p>
+          `;
+          container.appendChild(el);
+        });
+      } catch (err) {
+        container.innerHTML = `<p style='text-align:center; color:#ff6b6b; font-size:12px;'>${err.message}</p>`;
+      }
     }
+
+    function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c])); }
+    function date(ts) { try { return ts.toDate().toLocaleDateString(); } catch { return "—"; } }
+
+    // Load both live tabs on page open
+    loadType("announcement", "general");
+    loadType("testimony", "testimonies");
   </script>
+
 </body>
 </html>
